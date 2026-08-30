@@ -1,0 +1,61 @@
+---
+import Page from "../layouts/Page.astro";
+import Frame from "../components/Frame.astro";
+import Nav from "../components/Nav.astro";
+import { PAGE_COLOR } from "../data/theme";
+import { withBase } from "../lib/base";
+
+const EMAIL = "michellechang1115@gmail.com";
+const LINKEDIN_URL = "http://linkedin.com/in/michellechang1115/";
+const GITHUB_URL = "https://github.com/urverkmi";
+---
+
+<Page title="Contact — Michelle Chang">
+  <Frame background={PAGE_COLOR.contact}>
+    <div class="content">
+      <img class="face" src={withBase("/images/contact-face.png")} alt="" width="450" height="432" />
+
+      <div class="links">
+        <a class="email" href={`mailto:${EMAIL}`}>{EMAIL}</a>
+        <a class="link" href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer">Linkedin →</a>
+        <a class="link" href={GITHUB_URL} target="_blank" rel="noopener noreferrer">Github →</a>
+      </div>
+    </div>
+  </Frame>
+
+  <Nav active="contact" />
+
+  <style>
+    .content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 150px;
+    }
+
+    .face {
+      display: block;
+      width: 450px;
+      height: 432px;
+    }
+
+    .links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 28px;
+    }
+
+    .email,
+    .link {
+      color: #000;
+      text-decoration: none;
+    }
+
+    .email {
+      text-decoration: underline;
+    }
+  </style>
+</Page>

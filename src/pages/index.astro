@@ -1,0 +1,11 @@
+---
+import Page from "../layouts/Page.astro";
+import Landing from "../layouts/Landing.astro";
+import { projects } from "../data/projects";
+
+const project = projects[0];
+---
+
+<Page title={`${project.title} — Michelle Chang`}>
+  <Landing project={project} index={0} total={projects.length} />
+</Page>

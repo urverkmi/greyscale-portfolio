@@ -1,0 +1,56 @@
+---
+import { PAGE_COLOR, type PageTab } from "../data/theme";
+import { withBase } from "../lib/base";
+
+export interface Props {
+  active?: PageTab | null;
+}
+
+const { active = null } = Astro.props;
+
+// about | cv | contact form one continuous bar, each always its own fixed
+// color (see theme.ts). A tab only *looks* active because that color happens
+// to match its own page's background, making it blend in.
+const order: PageTab[] = ["about", "cv", "contact"];
+const hrefFor: Record<PageTab, string> = { about: "/", cv: "/cv", contact: "/contact" };
+// "about" is still the tab's internal id (matches PAGE_COLOR/PageTab elsewhere), just
+// labeled "projects" here since that's what the landing carousel actually shows.
+const labelFor: Record<PageTab, string> = { about: "projects", cv: "cv", contact: "contact" };
+---
+
+<nav class="nav">
+  {order.map((tab) => (
+    <a
+      href={withBase(hrefFor[tab])}
+      class="nav-item"
+      style={`background: ${PAGE_COLOR[tab]};`}
+      aria-current={active === tab ? "page" : undefined}
+    >
+      {labelFor[tab]}
+    </a>
+  ))}
+</nav>
+
+<style>
+  .nav {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    display: flex;
+    height: 41px;
+    z-index: 10;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 223px;
+    height: 100%;
+    font-size: 18px;
+    font-weight: 400;
+    color: #000;
+    text-decoration: none;
+  }
+</style>

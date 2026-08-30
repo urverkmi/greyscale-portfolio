@@ -1,0 +1,57 @@
+---
+import Page from "../layouts/Page.astro";
+import Frame from "../components/Frame.astro";
+import Nav from "../components/Nav.astro";
+import { PAGE_COLOR } from "../data/theme";
+import { withBase } from "../lib/base";
+---
+
+<Page title="CV — Michelle Chang">
+  <Frame background={PAGE_COLOR.cv}>
+    <div class="content">
+      <img
+        class="cv-image"
+        src={withBase("/images/Chang_Michelle_CV.jpg")}
+        alt="Michelle Chang's CV"
+        width="600"
+        height="849"
+      />
+
+      <a class="download" href={withBase("/Chang_Michelle_CV.pdf")} download="Chang_Michelle_CV.pdf">
+        keep a copy
+      </a>
+    </div>
+  </Frame>
+
+  <Nav active="cv" />
+
+  <style>
+    .content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 130px;
+    }
+
+    .cv-image {
+      display: block;
+      width: 600px;
+      height: 849px;
+    }
+
+    .download {
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 220px;
+      height: 40px;
+      background: #fff;
+      color: #000;
+      font-size: 20px;
+      text-decoration: none;
+    }
+  </style>
+</Page>

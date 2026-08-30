@@ -1,0 +1,57 @@
+---
+import { withBase } from "../lib/base";
+
+export interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href={withBase("/favicon.svg")} />
+    <link rel="icon" href={withBase("/favicon.ico")} />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <script is:inline>
+      (function () {
+        // Landing.astro's art-directed frame is a fixed 1512x982 canvas —
+        // compute the uniform scale-to-fit factor before first paint so
+        // there's no flash of unscaled content. The project detail page
+        // (src/pages/projects/[slug].astro) scrolls horizontally instead, so
+        // it only needs the height ratio, uncapped by window width.
+        var FRAME_WIDTH = 1512;
+        var FRAME_HEIGHT = 982;
+
+        function fitFrame() {
+          var root = document.documentElement.style;
+          root.setProperty(
+            "--frame-scale",
+            String(Math.min(window.innerWidth / FRAME_WIDTH, window.innerHeight / FRAME_HEIGHT)),
+          );
+          root.setProperty("--height-scale", String(window.innerHeight / FRAME_HEIGHT));
+        }
+
+        fitFrame();
+        window.addEventListener("resize", fitFrame);
+      })();
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+  }
+</style>

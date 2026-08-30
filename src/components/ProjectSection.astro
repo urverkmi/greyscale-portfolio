@@ -1,0 +1,286 @@
+---
+import { withBase } from "../lib/base";
+
+export interface SectionImage {
+  src: string;
+  alt: string;
+  caption?: string;
+  fullHeight?: boolean;
+}
+
+export interface SectionBlock {
+  html?: string;
+  image?: SectionImage;
+}
+
+export interface Props {
+  title: string;
+  // "rail"   — dot + stretching line + italic title, heading/body/image(s) below
+  // "circle" — no rail; heading + body centered inside a circle (closing section)
+  variant?: "rail" | "circle";
+  accent?: string;
+  dark?: boolean;
+  blocks?: SectionBlock[];
+}
+
+const { title, variant = "rail", accent = "#000", dark = false, blocks = [] } = Astro.props;
+---
+
+<section class:list={["section", { dark, "circle-section": variant === "circle" }]}>
+  <div class="section-inner">
+    {variant === "rail" && (
+      <div class="rail" style={`color: ${accent};`}>
+        <span class="dot" style={`background: ${accent};`}></span>
+        <span class="rail-title">{title}</span>
+        <span class="line" style={`background: ${accent};`}></span>
+      </div>
+    )}
+
+    {variant === "circle" ? (
+      <div class="circle">
+        <h2 class="circle-heading">{title}</h2>
+        {blocks.map((block) => block.html && <div class="body" set:html={block.html} />)}
+      </div>
+    ) : (
+      <div class="blocks">
+        {blocks.map((block) => (
+          <div class="block">
+            {block.html && <div class="body" set:html={block.html} />}
+            {block.image && (
+              <figure class:list={["figure", { "full-height": block.image.fullHeight }]}>
+                <img src={withBase(block.image.src)} alt={block.image.alt} />
+                {block.image.caption && <figcaption>{block.image.caption}</figcaption>}
+              </figure>
+            )}
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .section {
+    box-sizing: border-box;
+    flex: none;
+    height: 100%;
+    color: #000;
+  }
+
+  .section.dark {
+    /* matches frictionless-contributions.jpg's own background exactly
+       (sampled #454545), so the image's edges disappear into the section
+       instead of showing a seam */
+    background: #454545;
+    color: #fff;
+  }
+
+  /* bottom padding reserves Nav's real height (41px, see Nav.astro) plus a
+     24px breathing-room buffer, so section content — including the
+     Takeaways circle — always rests clear of the nav bar instead of
+     running under (or flush against) it. That 24px is shifted off the top
+     padding (96 -> 64 would've been the old symmetric value; here it's
+     88 -> 64) rather than added on top, so sections sit higher with more
+     room at the bottom, not just a taller block. Content here lives inside
+     the detail page's zoomed strip, so 41 real px is 41 / --height-scale
+     local px. overflow:hidden is a hard backstop: even if some child's
+     sizing math is off, nothing can visually escape past this padded box
+     and show up under the nav. */
+  /* Grid, not flex-column: a flex-grow-based ("flex:1 1 auto") height
+     anywhere above an <img> in this tree makes Chromium fall back to the
+     image's *raw pixel* dimensions — not its rendered size — when sizing
+     this section's shrink-to-fit width (verified directly against these
+     images; even 2+ ancestor levels away). A `1fr` grid row resolves to a
+     definite height instead, which keeps that computation correct. This is
+     why .blocks/.block/.figure below use grid-template-rows instead of
+     flex:1 1 auto for their height, even though they're still flex *rows*
+     internally for laying out their own children side by side. */
+  .section-inner {
+    box-sizing: border-box;
+    height: 100%;
+    padding: 64px 96px calc(41px / var(--height-scale, 1) + 24px);
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto 1fr;
+  }
+
+  /* rail: dot + line + title. The line is flex:1, so it always stretches to
+     fill whatever width this section ends up being — never a fixed length. */
+  .rail {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .dot {
+    flex: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .rail-title {
+    flex: none;
+    font-style: italic;
+    font-size: 20px;
+    white-space: nowrap;
+  }
+
+  .line {
+    flex: 1 1 auto;
+    min-width: 40px;
+    height: 1px;
+  }
+
+  .blocks {
+    display: flex;
+    align-items: flex-start;
+    gap: 64px;
+    margin-top: 64px;
+    /* sized by section-inner's 1fr grid row (see comment above) — this
+       always gets exactly whatever's left after .rail, however tall .rail
+       actually renders, with no magic number to fall out of sync and
+       overflow past the nav-clearance padding below */
+    min-height: 0;
+  }
+
+  /* grid, not flex-column, so each .block's own height-driven children
+     (.figure) get a *definite* height (the 1fr row) instead of a
+     flex-grow-derived one — see the section-inner comment above for why
+     that distinction is what keeps image sizing correct. Blocks with no
+     .body (image-only, e.g. the fullHeight contributions block) only have
+     one child, which needs the single-row override below. */
+  .block {
+    display: grid;
+    grid-template-rows: 1fr;
+    gap: 24px;
+    height: 100%;
+    min-height: 0;
+    /* flex-basis:auto (not 0) so each block is sized off its *own* content
+       — an image-only block still grows to fill leftover space via
+       flex-grow, but two unequal blocks (e.g. a short sketch next to a wide
+       diagram) no longer get forced to the same width */
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .block:has(.body) {
+    grid-template-rows: auto 1fr;
+  }
+
+  .body {
+    font-size: 20px;
+    line-height: 1.5;
+    max-width: 460px;
+  }
+
+  .body :global(p) {
+    margin: 0 0 24px;
+  }
+
+  .body :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .body :global(strong) {
+    font-weight: 700;
+  }
+
+  .body :global(.muted) {
+    color: #8c8c8c;
+  }
+
+  .body :global(ol) {
+    margin: 0 0 24px;
+    padding-left: 22px;
+  }
+
+  /* grid, not flex-column — same reason as .block above: the img needs a
+     *definite* height (a 1fr row), not a flex-grow-derived one, or its
+     width contribution to the shrink-to-fit section falls back to its raw
+     pixel size again. figcaption (when present) is the auto row, sized to
+     its own content, with the image taking whatever's left. */
+  .figure {
+    margin: 0;
+    display: grid;
+    grid-template-rows: 1fr;
+    align-items: flex-start;
+    gap: 12px;
+    /* height comes from .block's grid row (stretched by default), not a
+       flex-grow calc — see the section-inner comment above */
+    min-height: 0;
+    width: 100%;
+  }
+
+  .figure:has(figcaption) {
+    grid-template-rows: 1fr auto;
+  }
+
+  .figure img {
+    display: block;
+    max-width: 100%;
+    min-height: 0;
+    width: 100%;
+    /* explicit, not grid's default stretch: a replaced element with an
+       intrinsic aspect ratio and no explicit cross-size opts *out* of
+       stretch per spec, rendering at its natural size instead — height:100%
+       forces it to actually fill its grid row, which object-fit then
+       letterboxes within */
+    height: 100%;
+    object-fit: contain;
+    object-position: left top;
+  }
+
+  .figure.full-height {
+    height: 100%;
+  }
+
+  .figure.full-height img {
+    height: 100%;
+    width: auto;
+    object-fit: cover;
+  }
+
+  .figure figcaption {
+    font-style: italic;
+    color: #8c8c8c;
+    font-size: 16px;
+  }
+
+  /* closing "Takeaways" circle — no rail, no image. section-inner is a grid
+     container for the rail+blocks layout above, but this variant has no
+     rail (a single .circle child), so it's put back to a centered flex row
+     here; align-items stays the default (stretch), which fills the circle
+     to exactly .section-inner's content box top-to-bottom — no fixed
+     diameter to keep in sync by hand. */
+  .section.circle-section .section-inner {
+    display: flex;
+    justify-content: center;
+  }
+
+  .circle {
+    box-sizing: border-box;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #fff;
+    color: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 180px;
+  }
+
+  .circle-heading {
+    margin: 0 0 32px;
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .circle .body {
+    max-width: none;
+    font-size: 20px;
+  }
+</style>

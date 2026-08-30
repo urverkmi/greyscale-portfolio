@@ -1,0 +1,213 @@
+---
+import { getCollection } from "astro:content";
+import Page from "../../layouts/Page.astro";
+import Nav from "../../components/Nav.astro";
+import TitleCard from "../../components/TitleCard.astro";
+import ProjectSection from "../../components/ProjectSection.astro";
+import { projects } from "../../data/projects";
+import { withBase } from "../../lib/base";
+
+export async function getStaticPaths() {
+  // Only slugs with a src/content/projects/*.md entry get a route — e.g. only
+  // Frictionless for now. Adding a project later is just adding a markdown
+  // file, not touching this template.
+  const entries = await getCollection("projects");
+  return entries.map((entry) => {
+    const project = projects.find((p) => p.slug === entry.id);
+    if (!project) throw new Error(`No project data for content entry "${entry.id}"`);
+    return { params: { slug: entry.id }, props: { project, data: entry.data } };
+  });
+}
+
+const { project, data } = Astro.props;
+const CANVAS = "#e6e6e6";
+---
+
+<Page title={`${project.title} — Michelle Chang`}>
+  <div class="strip-viewport" style={`background: ${CANVAS};`}>
+    <div class="strip">
+      <header class="hero">
+        <img class="hero-image" src={withBase(data.heroImage)} alt={project.title} />
+
+        {data.sponsor && (
+          <p class="sponsor">
+            Sponsored by{" "}
+            {data.sponsor.url ? (
+              <a href={data.sponsor.url} target="_blank" rel="noopener noreferrer">{data.sponsor.name}</a>
+            ) : (
+              <span class="sponsor-name">{data.sponsor.name}</span>
+            )}
+          </p>
+        )}
+
+        <p class="intro">{data.intro}</p>
+
+        <div class="meta">
+          <TitleCard title={project.title} tagline={project.tagline} category={project.category} variant="card" />
+        </div>
+
+        {data.badge && (
+          <div class="badge">
+            <span>{data.badge}</span>
+            <img class="badge-arrow" src={withBase("/images/arrow.png")} alt="" />
+          </div>
+        )}
+      </header>
+
+      {data.sections.map((section) => (
+        <ProjectSection
+          title={section.title}
+          variant={section.variant}
+          accent={section.accent}
+          dark={section.dark}
+          blocks={section.blocks}
+        />
+      ))}
+    </div>
+  </div>
+
+  <Nav active={null} />
+
+  <style>
+    .strip-viewport {
+      position: fixed;
+      inset: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+
+    .strip {
+      display: flex;
+      align-items: stretch;
+      height: 982px;
+      width: max-content;
+      zoom: var(--height-scale, 1);
+    }
+
+    .hero {
+      box-sizing: border-box;
+      position: relative;
+      flex: none;
+      width: 1850px;
+      height: 100%;
+      padding: 0;
+
+      /*
+        Shared x-position for the title card and the badge below it, so
+        both — both width:400px — land on the exact same left/right edges
+        by construction instead of two separately-hand-tuned numbers
+        drifting apart (which is what left the badge 47px right of the
+        card before this).
+
+        This also pins the card to the exact screen pixel Landing.astro
+        renders it at, so navigating from the landing carousel into this
+        page causes zero visible movement. Landing centers a 1512x982 frame
+        in the viewport at --frame-scale (min of width/height ratio) and
+        places the card at frame-space x=930 — see TitleCard's placement
+        inside Landing.astro/ProjectSection.astro's .meta (left 83 +
+        carousel x 847). This page's strip instead zooms by --height-scale
+        (height-only, uncapped, no centering) and starts flush at the
+        viewport's left edge. The calc() below reproduces Landing's
+        screen-space x, then divides back down by --height-scale to convert
+        it into this page's pre-zoom coordinate space — the same space
+        hero-image/sponsor/intro below are defined in.
+
+        Landing renders TitleCard as variant="plain" (no box, no padding),
+        so its heading text sits flush at x=930. Here it's rendered as
+        variant="card", which adds 24px left/right padding around that same
+        text (see TitleCard.astro's .title-card.card) — so the *box* would
+        land on 930 but the actual "Frictionless" text would render 24px
+        right of Landing's. The -24px below shifts the box left by exactly
+        that padding so the visible text — not the box — lines up
+        pixel-for-pixel.
+      */
+      --card-left: calc(
+        ((100vw - 1512px * var(--frame-scale, 1)) / 2 + 930px * var(--frame-scale, 1)) / var(--height-scale, 1) -
+          24px
+      );
+    }
+
+    .hero-image {
+      position: absolute;
+      left: 80px;
+      top: 170px;
+      width: 940px;
+      height: auto;
+      display: block;
+    }
+
+    .sponsor {
+      position: absolute;
+      left: 1400px;
+      top: 157px;
+      width: 420px;
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .sponsor a,
+    .sponsor-name {
+      color: #000;
+      text-decoration: underline;
+    }
+
+    .intro {
+      position: absolute;
+      left: 1400px;
+      top: 245px;
+      width: 420px;
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.5;
+    }
+
+    .meta {
+      /* x comes from .hero's --card-left (see comment there); y uses the
+         same Landing-frame-to-strip-space conversion, at frame-space
+         y=689, minus TitleCard's card-variant 20px top padding so the
+         visible text (not the box) lands exactly on Landing's y=689. */
+      position: absolute;
+      left: var(--card-left);
+      top: calc(
+        ((100vh - 982px * var(--frame-scale, 1)) / 2 + 689px * var(--frame-scale, 1)) / var(--height-scale, 1) -
+          20px
+      );
+      width: 400px;
+    }
+
+    .badge {
+      position: absolute;
+      /* same x as the title card above (both width:400px), so their left
+         and right edges align exactly instead of the badge sitting at its
+         own separately-tuned offset */
+      left: var(--card-left);
+      /* flush against the title card's real rendered bottom edge: card box
+         top 669 [689 - the 20px padding compensation on .meta] + its own
+         rendered height (132px for this title/tagline/category combo at
+         TitleCard's current font sizes, in the shared frame coordinate
+         space above) = 801. Not derived via CSS (nothing here can
+         reference another element's rendered height) — if the card's
+         content or font sizes change enough to reflow its height, this
+         needs updating to match. */
+      top: 801px;
+      box-sizing: border-box;
+      width: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 24px;
+      background: #000;
+      color: #fff;
+      font-size: 18px;
+      line-height: 1.3;
+    }
+
+    .badge-arrow {
+      flex: none;
+      height: 20px;
+      width: auto;
+      display: block;
+    }
+  </style>
+</Page>

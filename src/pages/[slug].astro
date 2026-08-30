@@ -1,0 +1,22 @@
+---
+import Page from "../layouts/Page.astro";
+import Landing from "../layouts/Landing.astro";
+import { projects } from "../data/projects";
+
+export function getStaticPaths() {
+  // index 0 is served at "/" (see index.astro) — only route the rest here
+  return projects
+    .map((project, index) => ({ project, index }))
+    .filter(({ index }) => index !== 0)
+    .map(({ project, index }) => ({
+      params: { slug: project.slug },
+      props: { project, index },
+    }));
+}
+
+const { project, index } = Astro.props;
+---
+
+<Page title={`${project.title} — Michelle Chang`}>
+  <Landing project={project} index={index} total={projects.length} />
+</Page>

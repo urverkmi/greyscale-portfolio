@@ -1,0 +1,19 @@
+export default {
+  multipass: true,
+  js2svg: { pretty: false },
+  plugins: [
+    {
+      name: 'preset-default',
+      params: {
+        overrides: {
+          removeViewBox: false,
+          cleanupIds: false,
+          convertPathData: { floatPrecision: 2 },
+          cleanupNumericValues: { floatPrecision: 2 },
+        },
+      },
+    },
+    { name: 'prefixIds', params: { delim: '-' } },
+    'removeDimensions',
+  ],
+};

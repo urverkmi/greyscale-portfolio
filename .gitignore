@@ -1,0 +1,31 @@
+# build output
+dist/
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+# environment variables
+.env
+.env.production
+
+# macOS-specific files
+.DS_Store
+
+# jetbrains setting folder
+.idea/
+
+# local-only working files: not referenced by the site, kept on disk but
+# not published — raw source images (duplicates of public/), dev QA
+# screenshots, and a stray leftover image
+/assets/
+/screenshots/
+/processing-pipeline.png

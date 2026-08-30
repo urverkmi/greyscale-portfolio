@@ -1,0 +1,58 @@
+---
+export interface Props {
+  title: string;
+  tagline: string;
+  category: string;
+  // "plain" — floating text, used on the landing carousel
+  // "card"  — white boxed card, used on the project detail header
+  variant?: "plain" | "card";
+  // when set, the title links to the project's detail page
+  titleHref?: string;
+}
+
+const { title, tagline, category, variant = "plain", titleHref } = Astro.props;
+---
+
+<div class:list={["title-card", variant]}>
+  <h2 class="title">
+    {titleHref ? <a href={titleHref}>{title}</a> : title}
+  </h2>
+  <p class="tagline">{tagline}</p>
+  <p class="category">{category}</p>
+</div>
+
+<style>
+  .title-card {
+    box-sizing: border-box;
+    width: 400px;
+    text-align: center;
+  }
+
+  .title-card.card {
+    background: #fff;
+    padding: 20px 24px;
+  }
+
+  .title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 400;
+    text-decoration: underline;
+  }
+
+  .title a {
+    color: inherit;
+    text-decoration: inherit;
+  }
+
+  .tagline {
+    margin: 8px 0 0;
+    font-size: 22px;
+  }
+
+  .category {
+    margin: 8px 0 0;
+    font-size: 18px;
+    color: #8c8c8c;
+  }
+</style>

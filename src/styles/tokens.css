@@ -1,0 +1,18 @@
+:root {
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-12: 48px;
+  --space-18: 72px;
+
+  /* Color (stubbed — fill in) */
+  --color-bg: ;
+  --color-surface: ;
+  --color-text: ;
+  --color-text-muted: ;
+  --color-border: ;
+  --color-accent: ;
+}
