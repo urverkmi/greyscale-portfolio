@@ -3,5 +3,6 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://greyscale-portfolio.pages.dev',
+  site: 'https://urverkmi.github.io',
+  base: '/greyscale-portfolio',
 });
