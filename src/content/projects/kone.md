@@ -4,7 +4,7 @@ sponsor:
   name: KONE Design
   url: https://origin-www.kone.com/en/careers/professionals-and-technical-experts/design.aspx
 intro: >
-  KONE Design gave us an open-ended challenge: explore the role of an AI concierge in the elevator, and design a joyful experience for passengers. We grounded the concept in modern, budget-friendly hotels and we designed for hotel guests navigating an unfamiliar city where the concierge has a chance to learn the user’s preferences over their stay.
+  KONE Design gave us an open-ended challenge: explore the role of an AI concierge in the elevator, and design a joyful experience for passengers. We grounded the concept in modern, budget-friendly hotels, and we designed for hotel guests navigating an unfamiliar city so that the concierge has a chance to learn the user’s preferences over their stay.
 badge: An AI Companion for elevator riders
 
 sections:
@@ -20,7 +20,7 @@ sections:
           src: /logos/kone-elevator.svg
       - html: |
           <br><br>We designed the concierge as a built-in screen within the hotel elevator, positioned from roughly waist height upward to make interaction comfortable and accessible for most guests. We connected each guest’s interaction data to their room key card, as most hotels already require them to tap the same card to access their floor. This allows the concierge to recognize guests seamlessly without requiring additional input. 
-          <br><br>Naturally, privacy was designed into the system as well. A guest's interaction data is automatically erased as they check out to ensure that the concierge does not retain information beyond their stay.
+          <br><br>Naturally, privacy was designed into the system. A guest's interaction data is automatically erased as they check out to ensure that the concierge does not retain information beyond their stay.
   - title: Passive - Active interactive flow
     blocks:
       - html: |
@@ -32,7 +32,7 @@ sections:
     blocks:
       - html: |
          I designed the feedback loop of our recommendation system to treat engagement signals as positive feedback that indicates a user’s interest in a particular type of information. We took inspiration from the reinforcement mechanism underlying doom-scrolling: the more a user interacts with a certain type of content, the stronger the signal that it resonates with them.
-         <br><br>These preferences are then stored as part of the user’s interaction data and fed back into the recommendation system, allowing the concierge to continuously customize shown to the user.
+         <br><br>These preferences are then stored as part of the user’s interaction data and fed back into the recommendation system, allowing the concierge to continuously customize content shown to the user.
       - image:
           src: /images/kone-feedback.png
           alt: "KONE concierge recommendation feedback loop"
