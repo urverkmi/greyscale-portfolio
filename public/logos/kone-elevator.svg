@@ -1,0 +1,32 @@
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="kone-elevator">
+<rect id="Rectangle 14" x="0.5" y="0.5" width="399" height="399" fill="#E6E6E6" stroke="black"/>
+<path id="Polygon 7" d="M0.488495 95L0.488708 0.5L206.5 0.5L0.488495 95Z" fill="black"/>
+<path id="Polygon 8" d="M399.416 63L208.5 1L399.416 1V63Z" fill="black"/>
+<path id="Rectangle 42" d="M22 187.145L137 130V316.389L22 373V187.145Z" fill="#CDCDCD"/>
+<path id="Rectangle 47" d="M145 269.404L172 256V299.721L145 313V269.404Z" fill="#ACACAC"/>
+<ellipse id="Ellipse 57" cx="231" cy="188" rx="9" ry="8" fill="#D9D9D9"/>
+<ellipse id="Ellipse 58" cx="231" cy="204" rx="9" ry="8" fill="#D9D9D9"/>
+<ellipse id="Ellipse 59" cx="231" cy="220" rx="9" ry="8" fill="#D9D9D9"/>
+<path id="Rectangle 46" d="M272 69L399 108.5V399H272V69Z" fill="white"/>
+<ellipse id="Ellipse 61" cx="335" cy="168" rx="42" ry="28" fill="#D9D9D9"/>
+<path id="Rectangle 43" d="M293 234C293 220.745 303.745 210 317 210H353C366.255 210 377 220.745 377 234V399H293V234Z" fill="url(#paint0_linear_936_88)"/>
+<path id="Rectangle 44" d="M346.607 244.136C351.502 233.015 364.485 227.968 375.606 232.862L396.657 242.127L344.187 361.344L303 343.216L346.607 244.136Z" fill="#AAAAAA"/>
+<ellipse id="Ellipse 60" cx="231" cy="236" rx="9" ry="8" fill="#D9D9D9"/>
+<g id="hotel card">
+<g id="Group 27">
+<path id="Rectangle 43_2" d="M213.011 277.165C211.9 274.637 213.05 271.687 215.578 270.576L235.076 262.011C237.604 260.9 240.554 262.049 241.664 264.578L255.806 296.77C256.917 299.298 255.768 302.248 253.24 303.358L233.742 311.924C231.214 313.034 228.264 311.885 227.153 309.357L213.011 277.165Z" fill="#FD9CB5"/>
+</g>
+<path id="Polygon 1" d="M226.64 268.667L231.804 268.789L223.236 272.553L226.64 268.667Z" fill="white"/>
+</g>
+<path id="Rectangle 45" d="M253.568 323.574C243.355 319.369 238.484 307.68 242.69 297.466V297.466C246.895 287.252 258.584 282.382 268.798 286.587L359.964 324.126L344.734 361.113L253.568 323.574Z" fill="#AAAAAA"/>
+<circle id="Ellipse 62" cx="316.5" cy="176.5" r="2" fill="#D9D9D9" stroke="black"/>
+<circle id="Ellipse 63" cx="351.5" cy="176.5" r="2" stroke="black"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_936_88" x1="335" y1="210" x2="335" y2="399" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D9D9D9"/>
+<stop offset="1" stop-color="#4C4C4C"/>
+</linearGradient>
+</defs>
+</svg>

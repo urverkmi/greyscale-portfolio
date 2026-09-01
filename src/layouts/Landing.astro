@@ -55,6 +55,101 @@ const nextProject = projects[nextIndex];
 
 <Nav active="about" />
 
+<script define:vars={{ projects, initialIndex: index, base: import.meta.env.BASE_URL }}>
+  // Flipping through the carousel swaps the displayed project's content in
+  // place instead of navigating to its route, so the URL/tab title stay
+  // exactly as they were on load (whichever project you arrived at directly,
+  // e.g. via /kone) rather than jumping around between "/", "/kone", "/hesper"
+  // as you browse. The server-rendered hrefs above are the no-JS fallback;
+  // this just intercepts clicks when JS is available.
+  let currentIndex = initialIndex;
+  const total = projects.length;
+
+  function withBase(path) {
+    return base.replace(/\/$/, "") + path;
+  }
+
+  // mirrors Landing.astro's own hrefFor: index 0 lives at "/", every other
+  // project gets its own "/[slug]" route
+  function hrefFor(i) {
+    return i === 0 ? "/" : `/${projects[i].slug}`;
+  }
+
+  function render(i) {
+    const project = projects[i];
+    const prevI = (i - 1 + total) % total;
+    const nextI = (i + 1) % total;
+
+    document.querySelector(".carousel .counter").textContent = `project ${i + 1}/${total}`;
+
+    const heroImg = document.querySelector(".carousel .hero");
+    heroImg.src = withBase(project.logo);
+    heroImg.alt = project.title;
+
+    const titleLink = document.querySelector(".carousel .meta .title a");
+    titleLink.textContent = project.title;
+    titleLink.href = withBase(`/projects/${project.slug}`);
+
+    document.querySelector(".carousel .meta .tagline").textContent = project.tagline;
+    document.querySelector(".carousel .meta .category").textContent = project.category;
+
+    const prevArrow = document.querySelector(".arrow-prev");
+    prevArrow.href = withBase(hrefFor(prevI));
+    prevArrow.setAttribute("aria-label", `Previous project: ${projects[prevI].title}`);
+
+    const nextArrow = document.querySelector(".arrow-next");
+    nextArrow.href = withBase(hrefFor(nextI));
+    nextArrow.setAttribute("aria-label", `Next project: ${projects[nextI].title}`);
+  }
+
+  document.querySelector(".arrow-prev").addEventListener("click", (e) => {
+    e.preventDefault();
+    currentIndex = (currentIndex - 1 + total) % total;
+    render(currentIndex);
+    remember(currentIndex);
+  });
+
+  document.querySelector(".arrow-next").addEventListener("click", (e) => {
+    e.preventDefault();
+    currentIndex = (currentIndex + 1) % total;
+    render(currentIndex);
+    remember(currentIndex);
+  });
+
+  // Remembers whichever project was last shown here, so the root "/" —
+  // the nav bar's "projects" destination — can resume there instead of
+  // always resetting to Frictionless. /kone and /hesper are each already
+  // a specific project's own page (not an ambiguous default), so they
+  // always show themselves regardless of what's remembered; only "/"
+  // (initialIndex 0) checks it, and only on load — once it's been
+  // resolved, this page instance just tracks state like any other.
+  const LAST_VIEWED_KEY = "lastViewedProjectSlug";
+
+  function remember(i) {
+    try {
+      localStorage.setItem(LAST_VIEWED_KEY, projects[i].slug);
+    } catch {
+      // storage unavailable (private browsing, blocked, etc.) — fine to no-op
+    }
+  }
+
+  if (initialIndex === 0) {
+    let savedSlug = null;
+    try {
+      savedSlug = localStorage.getItem(LAST_VIEWED_KEY);
+    } catch {
+      // storage unavailable — just keep the default (Frictionless)
+    }
+    const savedIndex = projects.findIndex((p) => p.slug === savedSlug);
+    if (savedIndex > 0) {
+      currentIndex = savedIndex;
+      render(currentIndex);
+    }
+  }
+
+  remember(currentIndex);
+</script>
+
 <style>
   /* groups the intro text and the project card so the pair can be centered
      together, instead of each being pinned to its own frame-relative spot */

@@ -11,7 +11,7 @@ export const projects: Project[] = [
   {
     slug: "frictionless",
     title: "Frictionless",
-    tagline: "i.e. Plasma brake test rig",
+    tagline: "Plasma brake test rig",
     category: "product design",
     logo: "/logos/frictionless-logo.svg",
     image: "/images/frictionless-hero.jpg",
@@ -19,7 +19,7 @@ export const projects: Project[] = [
   {
     slug: "kone",
     title: "KONE Concierge",
-    tagline: "i.e. AI concierge in hotel elevators",
+    tagline: "AI concierge in hotel elevators",
     category: "experience design",
     logo: "/logos/kone-logo.svg",
     image: "/images/kone-hero.jpg",
@@ -27,7 +27,7 @@ export const projects: Project[] = [
   {
     slug: "hesper",
     title: "Hesper the Artsy Ghost",
-    tagline: "i.e. Mixed reality in art museums",
+    tagline: "Mixed reality in art museums",
     category: "interaction design",
     logo: "/logos/hesper-logo.svg",
     image: "/images/hesper-hero.jpg",
