@@ -9,10 +9,10 @@ badge: An AI Companion for elevator riders
 
 sections:
   - title: Designing for when the AI should not be present
-    accent: "#000"
+    accent: "#525252"
     blocks:
       - html: |
-          Generative AI is becoming omnicompetent. It can be marvelous as a productivity tool, but what role does it play when the goal is to increase a user’s joy? And how willing are people — when they are tired, distracted, or seeking intimacy — to interact with a product they didn't ask for?
+          Generative AI is becoming omnicompetent. It can be marvelous as a productivity tool, but what role does it play when the goal is to increase a user’s joy? And how willing are people (when they are tired, distracted, or seeking intimacy) to interact with a product they didn't ask for?
           <br><br>These questions led us to shape our core question that is counter-intuitive to conventional product design: <b>when should our product stay out of the way?</b>
       - html: |
           <b>The elevator as an interface</b>.
@@ -22,6 +22,7 @@ sections:
           <br><br>We designed the concierge as a built-in screen within the hotel elevator, positioned from roughly waist height upward to make interaction comfortable and accessible for most guests. We connected each guest’s interaction data to their room key card, as most hotels already require them to tap the same card to access their floor. This allows the concierge to recognize guests seamlessly without requiring additional input. 
           <br><br>Naturally, privacy was designed into the system. A guest's interaction data is automatically erased as they check out to ensure that the concierge does not retain information beyond their stay.
   - title: Passive - Active interactive flow
+    accent: "#525252"
     blocks:
       - html: |
           We designed the concierge around <b>absence</b> as the default. The passive screens serve generic information until the guest invites the AI by tapping their hotel key card, marking an explicit interaction.
@@ -29,6 +30,7 @@ sections:
           src: /images/kone-basic-flow.png
           alt: "Basic flow of the KONE concierge"
   - title: Designing the feedback loop
+    accent: "#525252"
     blocks:
       - html: |
          I designed the feedback loop of our recommendation system to treat engagement signals as positive feedback that indicates a user’s interest in a particular type of information. We took inspiration from the reinforcement mechanism underlying doom-scrolling: the more a user interacts with a certain type of content, the stronger the signal that it resonates with them.
@@ -36,7 +38,8 @@ sections:
       - image:
           src: /images/kone-feedback.png
           alt: "KONE concierge recommendation feedback loop"
-  - title: Designing What Not to Build
+  - title: Designing what not to build
+    accent: "#525252"
     blocks:
       - html: |
           We deliberately said no to two seemingly intuitive features. These decisions were grounded in user interviews, storyboard evaluations, and desktop research. 

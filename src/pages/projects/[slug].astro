@@ -42,16 +42,18 @@ const CANVAS = "#e6e6e6";
 
         <p class="intro">{data.intro}</p>
 
-        <div class="meta">
-          <TitleCard title={project.title} tagline={project.tagline} category={project.category} variant="card" />
-        </div>
-
-        {data.badge && (
-          <div class="badge">
-            <span>{data.badge}</span>
-            <img class="badge-arrow" src={withBase("/images/arrow.png")} alt="" />
+        <div class="meta-stack">
+          <div class="meta">
+            <TitleCard title={project.title} tagline={project.tagline} category={project.category} variant="card" />
           </div>
-        )}
+
+          {data.badge && (
+            <div class="badge">
+              <span>{data.badge}</span>
+              <img class="badge-arrow" src={withBase("/images/arrow.png")} alt="" />
+            </div>
+          )}
+        </div>
       </header>
 
       {data.sections.map((section) => (
@@ -67,6 +69,127 @@ const CANVAS = "#e6e6e6";
   </div>
 
   <Nav active={null} />
+
+  <script>
+    // A mouse wheel only ever sends deltaY (vertical), so without this,
+    // scrolling here does nothing — a trackpad's horizontal swipe already
+    // works natively via deltaX, and isn't always available. Redirecting
+    // deltaY into scrollLeft only when it's the dominant axis (not just
+    // nonzero) keeps genuine two-axis trackpad gestures — a horizontal
+    // swipe still carries a little deltaY noise — scrolling horizontally
+    // as expected, instead of fighting the native behavior.
+    const stripViewport = document.querySelector(".strip-viewport");
+
+    if (stripViewport) {
+      stripViewport.addEventListener(
+        "wheel",
+        (e) => {
+          if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+            e.preventDefault();
+            stripViewport.scrollLeft += e.deltaY;
+          }
+        },
+        { passive: false },
+      );
+    }
+
+    // ProjectSection's .figure img is meant to be sized by its *height*
+    // (an ancestor grid row) with the width following from its own aspect
+    // ratio — via width:100%/height:100% + object-fit for the normal
+    // variant, or width:auto/height:100% for the fullHeight one. In
+    // Chromium this resolves correctly, but WebKit and Firefox each
+    // resolve it differently and wrongly: verified directly, WebKit
+    // renders the image at its raw natural pixel width (e.g. a
+    // 5624px-wide source photo actually renders 5624px wide, blowing out
+    // the whole section's width and leaving a wall of blank space after
+    // it), and Firefox miscalculates the fullHeight variant's width
+    // entirely. There's no pure-CSS fix that resolves correctly in all
+    // three engines. What *is* consistent across all three is the
+    // rendered height, so this computes the correct width from that
+    // (height × the image's own natural aspect ratio) and sets it
+    // explicitly, overriding whatever each browser's own layout produced.
+    for (const img of document.querySelectorAll(".figure img")) {
+      const fixWidth = () => {
+        if (!img.naturalWidth || !img.naturalHeight || !img.clientHeight) return;
+        img.style.width = `${Math.round(img.clientHeight * (img.naturalWidth / img.naturalHeight))}px`;
+      };
+
+      if (img.complete) fixWidth();
+      else img.addEventListener("load", fixWidth, { once: true });
+
+      new ResizeObserver(fixWidth).observe(img);
+    }
+
+    // Positions .meta-stack (the title card + badge) at the exact screen
+    // pixel Landing.astro renders the same card at, so navigating from the
+    // landing carousel into this page causes zero visible movement. This
+    // used to be a CSS calc() dividing by --height-scale (see the .strip
+    // comment on --card-left, kept for context even though it's no longer
+    // load-bearing) — the same category of bug as the badge fix above:
+    // that calc division depends on .strip's `zoom: var(--height-scale)`
+    // actually taking effect the way Chrome (and Playwright's WebKit) apply
+    // it, and on real Safari it evidently didn't — the whole stack ended up
+    // positioned far down and to the right instead. This version makes no
+    // assumption about zoom at all: it measures .hero's *actual* rendered
+    // width against its known 1850px pre-zoom width to get the real
+    // effective scale, computes Landing's frame-centered target directly in
+    // real screen pixels (window.innerWidth/innerHeight, the same formula
+    // Landing.astro itself uses), and converts that into a plain pixel
+    // left/top — no calc(), no zoom-dependent division, so there's nothing
+    // left for a browser's zoom support to get wrong.
+    const hero = document.querySelector(".hero");
+    const metaStack = document.querySelector(".meta-stack");
+
+    if (hero && metaStack) {
+      const FRAME_WIDTH = 1512;
+      const FRAME_HEIGHT = 982;
+      // frame-space position of the card in Landing.astro/ProjectSection's
+      // .meta — see the .strip --card-left comment for the derivation
+      const CARD_FRAME_X = 930;
+      const CARD_FRAME_Y = 689;
+      // TitleCard's card-variant padding (see TitleCard.astro), which the
+      // box needs to shift up/left by so the *text* lands on the target,
+      // not the box
+      const CARD_PADDING_X = 24;
+      const CARD_PADDING_Y = 20;
+      // Deliberate departure from an exact landing-page match: some
+      // projects' hero images (e.g. catcha-title.png, a different aspect
+      // ratio than frictionless/kone's) render content that reaches into
+      // the card's exact-match position and visibly overlaps it. Nudging
+      // every project down/right by the same fixed amount helps, at the
+      // cost of no longer being a literal zero-pixel match on navigation
+      // for any of them.
+      //
+      // This can't fully solve catcha specifically: at 1512x982, its
+      // card+badge stack (longer title/tagline/badge text than the other
+      // projects, so it wraps to more lines) is 211px tall, but the gap
+      // between its hero image and the nav bar is only 163px — no nudge
+      // value avoids overlapping one or the other, since the content
+      // simply doesn't fit in the available space. Kept modest here so it
+      // never newly overlaps the nav for *any* project; catcha's image
+      // overlap is reduced but not eliminated at common window sizes.
+      const NUDGE_X = 60;
+      const NUDGE_Y = 42;
+
+      const positionMetaStack = () => {
+        const heroRect = hero.getBoundingClientRect();
+        const scale = heroRect.width / 1850;
+
+        const frameScale = Math.min(window.innerWidth / FRAME_WIDTH, window.innerHeight / FRAME_HEIGHT);
+        const offsetX = (window.innerWidth - FRAME_WIDTH * frameScale) / 2;
+        const offsetY = (window.innerHeight - FRAME_HEIGHT * frameScale) / 2;
+        const screenX = offsetX + CARD_FRAME_X * frameScale - CARD_PADDING_X * scale + NUDGE_X * scale;
+        const screenY = offsetY + CARD_FRAME_Y * frameScale - CARD_PADDING_Y * scale + NUDGE_Y * scale;
+
+        metaStack.style.left = `${(screenX - heroRect.left) / scale}px`;
+        metaStack.style.top = `${(screenY - heroRect.top) / scale}px`;
+      };
+
+      positionMetaStack();
+      window.addEventListener("resize", positionMetaStack);
+      new ResizeObserver(positionMetaStack).observe(hero);
+    }
+  </script>
 
   <style>
     .strip-viewport {
@@ -161,11 +284,25 @@ const CANVAS = "#e6e6e6";
       line-height: 1.5;
     }
 
-    .meta {
-      /* x comes from .hero's --card-left (see comment there); y uses the
-         same Landing-frame-to-strip-space conversion, at frame-space
-         y=689, minus TitleCard's card-variant 20px top padding so the
-         visible text (not the box) lands exactly on Landing's y=689. */
+    .meta-stack {
+      /* Positions the card+badge pair as one unit; x comes from .hero's
+         --card-left (see comment there), y uses the same Landing-frame-to-
+         strip-space conversion, at frame-space y=689, minus TitleCard's
+         card-variant 20px top padding so the visible text (not the box)
+         lands exactly on Landing's y=689.
+
+         The badge itself is NOT separately positioned — it's just the next
+         element in normal document flow after .meta, so it sits flush
+         beneath it with zero gap by construction. An earlier version tried
+         to compute that gap explicitly (via a hardcoded pixel value, then
+         via JS measuring .meta's rendered height), but both broke in
+         practice — the CSS `zoom` this whole page's strip relies on isn't
+         supported identically everywhere (confirmed: fine in Chrome and in
+         Playwright's WebKit build, but real Safari rendered the card and
+         badge on top of each other). Plain document flow can't be wrong,
+         because it isn't computing a position at all — the browser is
+         just placing one box after another, which works the same way
+         regardless of zoom support or any other rendering quirk. */
       position: absolute;
       left: var(--card-left);
       top: calc(
@@ -176,20 +313,7 @@ const CANVAS = "#e6e6e6";
     }
 
     .badge {
-      position: absolute;
-      /* same x as the title card above (both width:400px), so their left
-         and right edges align exactly instead of the badge sitting at its
-         own separately-tuned offset */
-      left: var(--card-left);
-      /* flush against the title card's real rendered bottom edge: card box
-         top 669 [689 - the 20px padding compensation on .meta] + its own
-         rendered height (132px for this title/tagline/category combo at
-         TitleCard's current font sizes, in the shared frame coordinate
-         space above) = 801. Not derived via CSS (nothing here can
-         reference another element's rendered height) — if the card's
-         content or font sizes change enough to reflow its height, this
-         needs updating to match. */
-      top: 801px;
+      /* no position/left/top — see .meta-stack's comment above */
       box-sizing: border-box;
       width: 400px;
       display: flex;

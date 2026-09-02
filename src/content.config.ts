@@ -6,11 +6,19 @@ const imageSchema = z.object({
   alt: z.string().default(""),
   caption: z.string().optional(),
   fullHeight: z.boolean().default(false),
+  // relative share of the stack's height when this image is part of a
+  // block's `images` list (see blockSchema below) — e.g. 40/60 vs 1/1.5,
+  // any positive numbers work since they're used as flex proportions, not
+  // required to sum to 100. Ignored for a lone `image`.
+  sizePercent: z.number().positive().optional(),
 });
 
 const blockSchema = z.object({
   html: z.string().optional(),
   image: imageSchema.optional(),
+  // multiple images stacked vertically within this one block/column (as
+  // opposed to `image`, a single image filling the whole column)
+  images: z.array(imageSchema).optional(),
 });
 
 const sectionSchema = z.object({

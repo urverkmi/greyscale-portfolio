@@ -6,11 +6,19 @@ export interface SectionImage {
   alt: string;
   caption?: string;
   fullHeight?: boolean;
+  // relative share of the stack's height when this image is part of a
+  // block's `images` list below — e.g. 40/60, or 1/1.5, any positive
+  // numbers work since they're used as grid fr proportions, not required
+  // to sum to 100. Ignored for a lone `image`.
+  sizePercent?: number;
 }
 
 export interface SectionBlock {
   html?: string;
   image?: SectionImage;
+  // multiple images stacked vertically within this one block/column (as
+  // opposed to `image`, a single image filling the whole column)
+  images?: SectionImage[];
 }
 
 export interface Props {
@@ -51,6 +59,19 @@ const { title, variant = "rail", accent = "#000", dark = false, blocks = [] } = 
                 <img src={withBase(block.image.src)} alt={block.image.alt} />
                 {block.image.caption && <figcaption>{block.image.caption}</figcaption>}
               </figure>
+            )}
+            {block.images && block.images.length > 0 && (
+              <div
+                class="figure-stack"
+                style={`grid-template-rows: ${block.images.map((img) => `${img.sizePercent ?? 1}fr`).join(" ")};`}
+              >
+                {block.images.map((img) => (
+                  <figure class="figure">
+                    <img src={withBase(img.src)} alt={img.alt} />
+                    {img.caption && <figcaption>{img.caption}</figcaption>}
+                  </figure>
+                ))}
+              </div>
             )}
           </div>
         ))}
@@ -246,6 +267,21 @@ const { title, variant = "rail", accent = "#000", dark = false, blocks = [] } = 
     font-style: italic;
     color: #8c8c8c;
     font-size: 16px;
+  }
+
+  /* multiple images stacked in one column (block.images, vs. a single
+     block.image) — grid, for the same reason as .figure/.block above: a
+     flex-grow height here would break the shrink-to-fit width computation
+     further up. Each image's row height is set inline from its
+     sizePercent (fr units, so it's a ratio — doesn't need to sum to 100),
+     defaulting to an even 1fr split when unset. The nested .figure
+     elements reuse all of .figure's own rules above (grid-stretched to
+     fill their row, img forced to height:100%, etc.) unchanged. */
+  .figure-stack {
+    display: grid;
+    gap: 24px;
+    min-height: 0;
+    width: 100%;
   }
 
   /* closing "Takeaways" circle — no rail, no image. section-inner is a grid
