@@ -28,13 +28,20 @@ export interface Props {
   variant?: "rail" | "circle";
   accent?: string;
   dark?: boolean;
+  // overrides .section.dark's fixed #454545 with any CSS color — e.g. to
+  // match a section's own image instead of the one dark background every
+  // other dark section shares
+  background?: string;
   blocks?: SectionBlock[];
 }
 
-const { title, variant = "rail", accent = "#000", dark = false, blocks = [] } = Astro.props;
+const { title, variant = "rail", accent = "#000", dark = false, background, blocks = [] } = Astro.props;
 ---
 
-<section class:list={["section", { dark, "circle-section": variant === "circle" }]}>
+<section
+  class:list={["section", { dark, "circle-section": variant === "circle" }]}
+  style={background ? `background: ${background};` : undefined}
+>
   <div class="section-inner">
     {variant === "rail" && (
       <div class="rail" style={`color: ${accent};`}>

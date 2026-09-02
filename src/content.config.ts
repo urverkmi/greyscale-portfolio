@@ -25,7 +25,13 @@ const sectionSchema = z.object({
   title: z.string(),
   variant: z.enum(["rail", "circle"]).default("rail"),
   accent: z.string().default("#000"),
+  // `dark` alone still picks the old fixed #454545 (see ProjectSection's
+  // .section.dark) and switches text to white — `background` overrides
+  // that with any CSS color, e.g. to match a section's own image (dark
+  // still controls the white text switch, since an arbitrary background
+  // could be light or dark).
   dark: z.boolean().default(false),
+  background: z.string().optional(),
   blocks: z.array(blockSchema).default([]),
 });
 

@@ -50,6 +50,13 @@ sections:
       - image:
           src: /images/catcha-prototypes.png
           alt: The two cardboard prototypes
+  - title: Final design spec
+    accent: "#525252"
+    background: "#F1EADF"
+    blocks:
+      - image:
+          src: /images/catcha-spec.jpg
+          fullHeight: true
   - title: User testing & reflections
     accent: "#525252"
     blocks:
