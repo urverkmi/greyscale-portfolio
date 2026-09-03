@@ -7,6 +7,11 @@ intro: >
   Aurora needed an repeatable in-house testing process for their plasma brake
   product, which is a tether-based device that deorbits satellites at the end
   of their mission.
+  <br><br>
+  <br><b>Role</b>: Designer / Engineer (as part of group of 11)
+  <br><b>Course</b>: Product Design Project
+  <br><b>Tools</b>: Raspberry Pi, micro-controllers, etc.
+  <br><b>Duration</b>: 9 months
 badge: Simulating space-like condition on Earth
 
 sections:

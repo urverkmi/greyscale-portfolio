@@ -2,6 +2,11 @@
 heroImage: /images/catcha-title.png
 intro: >
   Inspired by gumball machines, Catcha is a toy retriever designed for house cats to operate independently with their feline intuition.
+  <br><br>
+  <br><b>Role</b>: Product designer (Individual project)
+  <br><b>Platform</b>: Meta Quest 3
+  <br><b>Tools</b>: Unity, Meta XR SDK, MRUK
+  <br><b>Duration</b>: 4 weeks
 badge: Designing for my cat's everyday happiness
 
 sections:
@@ -71,7 +76,7 @@ sections:
     variant: circle
     blocks:
       - html: |
-          Individual cats can have very different ways of learning. Cats that are naturally rewarded by play (e.g. Xuxu) may quickly learn to operate a machine like Catcha, while cats that are more strongly rewarded by food, or cats that are physically challenged, may have little incentive to engage with it in the first place.
-          <br><br>This reinforced an insight that applies beyond animal-centered design: users do not share the same motivations, preferences, or learning curves. Just as we account for individual differences when designing for humans, designing for animals requires us to understand what each user finds rewarding and design the interaction around it.
+          Individual cats can have very different ways of learning. Cats that are naturally rewarded by play (e.g. Xuxu) may quickly learn to operate a machine like Catcha, while cats that are more strongly rewarded by food, or cats that are physically challenged, may have little incentive to engage with it in the first place. 
+          <br><br>It was genuinely fun to design for someone that I really care about, and I want to do more of that. :)
 
 ---

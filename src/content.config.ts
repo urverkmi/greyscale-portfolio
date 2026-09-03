@@ -6,11 +6,17 @@ const imageSchema = z.object({
   alt: z.string().default(""),
   caption: z.string().optional(),
   fullHeight: z.boolean().default(false),
-  // relative share of the stack's height when this image is part of a
-  // block's `images` list (see blockSchema below) — e.g. 40/60 vs 1/1.5,
-  // any positive numbers work since they're used as flex proportions, not
-  // required to sum to 100. Ignored for a lone `image`.
+  // How much of the block's available height this image takes. On a lone
+  // `image`, a literal percentage (0-100): the rest of the column is left
+  // blank. On an `images` list, relative shares instead (e.g. 40/60, or
+  // 1/1.5) — any positive numbers work since they're grid fr proportions
+  // there, not required to sum to 100.
   sizePercent: z.number().positive().optional(),
+  // Which edge of the column a lone `image`'s sizePercent-driven blank
+  // space sits against — "top" (default) leaves it below the image,
+  // "bottom" leaves it above. Ignored on an `images` list and when
+  // sizePercent isn't set.
+  align: z.enum(["top", "bottom"]).default("top"),
 });
 
 const blockSchema = z.object({

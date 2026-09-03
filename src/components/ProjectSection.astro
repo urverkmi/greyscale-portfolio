@@ -6,11 +6,19 @@ export interface SectionImage {
   alt: string;
   caption?: string;
   fullHeight?: boolean;
-  // relative share of the stack's height when this image is part of a
-  // block's `images` list below — e.g. 40/60, or 1/1.5, any positive
-  // numbers work since they're used as grid fr proportions, not required
-  // to sum to 100. Ignored for a lone `image`.
+  // How much of the block's available height this image takes.
+  // On a lone `image`, this is a literal percentage (0-100): the image
+  // gets that share, with the rest left blank on whichever side `align`
+  // points away from — e.g. 50 with align "top" (the default) leaves the
+  // bottom half of the column empty. On an `images` list, values are
+  // relative shares instead (e.g. 40/60, or 1/1.5) — any positive numbers
+  // work since they're grid fr proportions there, not required to sum to
+  // 100; `align` is ignored there.
   sizePercent?: number;
+  // Which edge of the column the blank space sits against — "top"
+  // (default) leaves it below the image, "bottom" leaves it above. Only
+  // matters when sizePercent is set on a lone `image`.
+  align?: "top" | "bottom";
 }
 
 export interface SectionBlock {
@@ -36,6 +44,36 @@ export interface Props {
 }
 
 const { title, variant = "rail", accent = "#000", dark = false, background, blocks = [] } = Astro.props;
+
+// Only relevant for a lone `image` with sizePercent set — see the CSS
+// comment on .block for why this has to be the *block's* grid-template-
+// rows (not something scoped to .figure itself). Undefined otherwise, so
+// the default CSS rules (.block / .block:has(.body)) apply unchanged.
+//
+// The size track and the blank (remainder) track are ordered so the size
+// track ends up first (top-aligned) or last (bottom-aligned) among the
+// non-body rows — figureGridRow() below then has to explicitly place
+// .figure into that same track for "bottom", since grid auto-placement
+// would otherwise put it in the *first* available row (the blank one)
+// regardless of which track is bigger.
+function blockGridStyle(block: SectionBlock): string | undefined {
+  const sizePercent = block.image?.sizePercent;
+  if (sizePercent === undefined) return undefined;
+  const remainder = Math.max(0, 100 - sizePercent);
+  const sizeTrack = `${sizePercent}fr`;
+  const remainderTrack = `${remainder}fr`;
+  const ownRows = block.image?.align === "bottom" ? `${remainderTrack} ${sizeTrack}` : `${sizeTrack} ${remainderTrack}`;
+  return `grid-template-rows: ${block.html ? `auto ${ownRows}` : ownRows};`;
+}
+
+// Companion to blockGridStyle(): only needed for "bottom" align, to move
+// .figure out of the default auto-placed (first, blank) row into the
+// size track, which blockGridStyle() put last in that case.
+function figureGridRow(block: SectionBlock): string | undefined {
+  if (block.image?.sizePercent === undefined || block.image?.align !== "bottom") return undefined;
+  const lastRow = block.html ? 3 : 2;
+  return `grid-row: ${lastRow};`;
+}
 ---
 
 <section
@@ -59,10 +97,13 @@ const { title, variant = "rail", accent = "#000", dark = false, background, bloc
     ) : (
       <div class="blocks">
         {blocks.map((block) => (
-          <div class="block">
+          <div class="block" style={blockGridStyle(block)}>
             {block.html && <div class="body" set:html={block.html} />}
             {block.image && (
-              <figure class:list={["figure", { "full-height": block.image.fullHeight }]}>
+              <figure
+                class:list={["figure", { "full-height": block.image.fullHeight }]}
+                style={figureGridRow(block)}
+              >
                 <img src={withBase(block.image.src)} alt={block.image.alt} />
                 {block.image.caption && <figcaption>{block.image.caption}</figcaption>}
               </figure>
@@ -178,7 +219,17 @@ const { title, variant = "rail", accent = "#000", dark = false, background, bloc
      flex-grow-derived one — see the section-inner comment above for why
      that distinction is what keeps image sizing correct. Blocks with no
      .body (image-only, e.g. the fullHeight contributions block) only have
-     one child, which needs the single-row override below. */
+     one child, which needs the single-row override below.
+
+     A lone image's sizePercent (see blockGridStyle() above) also works
+     through this: it's the *block's* grid-template-rows that gets
+     overridden with an inline style (e.g. "auto 40fr 60fr"), not
+     something scoped to .figure, because a grid track reserves its space
+     whether or not anything fills it — an unclaimed trailing fr-track is
+     what actually produces the "rest is left blank" part, and that has to
+     be a track of this grid, not .figure's internal one (which only ever
+     has exactly one child fighting for space: the image, or the image
+     plus its own figcaption). */
   .block {
     display: grid;
     grid-template-rows: 1fr;

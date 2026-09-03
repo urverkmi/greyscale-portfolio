@@ -5,6 +5,11 @@ sponsor:
   url: https://origin-www.kone.com/en/careers/professionals-and-technical-experts/design.aspx
 intro: >
   KONE Design gave us an open-ended challenge: explore the role of an AI concierge in the elevator, and design a joyful experience for passengers. We grounded the concept in modern, budget-friendly hotels, and we designed for hotel guests navigating an unfamiliar city so that the concierge has a chance to learn the user’s preferences over their stay.
+  <br><br>
+  <br><b>Role</b>: Interaction Designer (as part of group of 4)
+  <br><b>Course</b>: Experience Design Project
+  <br><b>Tools</b>: Figma, Miro
+  <br><b>Duration</b>: 3 months
 badge: An AI Companion for elevator riders
 
 sections:
