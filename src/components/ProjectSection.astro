@@ -21,12 +21,26 @@ export interface SectionImage {
   align?: "top" | "bottom";
 }
 
+export interface SectionVideo {
+  // any common YouTube URL form, or a bare 11-char video ID — see
+  // extractYouTubeId() below
+  youtube: string;
+  caption?: string;
+  // same meaning as SectionImage's sizePercent/align, for a lone video
+  // filling its own block/column
+  sizePercent?: number;
+  align?: "top" | "bottom";
+}
+
 export interface SectionBlock {
   html?: string;
   image?: SectionImage;
   // multiple images stacked vertically within this one block/column (as
   // opposed to `image`, a single image filling the whole column)
   images?: SectionImage[];
+  // a clickable YouTube thumbnail that swaps itself for a real embedded
+  // player on click — see the .video-thumb script below
+  video?: SectionVideo;
 }
 
 export interface Props {
@@ -45,10 +59,11 @@ export interface Props {
 
 const { title, variant = "rail", accent = "#000", dark = false, background, blocks = [] } = Astro.props;
 
-// Only relevant for a lone `image` with sizePercent set — see the CSS
-// comment on .block for why this has to be the *block's* grid-template-
-// rows (not something scoped to .figure itself). Undefined otherwise, so
-// the default CSS rules (.block / .block:has(.body)) apply unchanged.
+// Only relevant for a lone `image`/`video` with sizePercent set — see the
+// CSS comment on .block for why this has to be the *block's*
+// grid-template-rows (not something scoped to .figure itself). Undefined
+// otherwise, so the default CSS rules (.block / .block:has(.body)) apply
+// unchanged.
 //
 // The size track and the blank (remainder) track are ordered so the size
 // track ends up first (top-aligned) or last (bottom-aligned) among the
@@ -57,12 +72,13 @@ const { title, variant = "rail", accent = "#000", dark = false, background, bloc
 // would otherwise put it in the *first* available row (the blank one)
 // regardless of which track is bigger.
 function blockGridStyle(block: SectionBlock): string | undefined {
-  const sizePercent = block.image?.sizePercent;
+  const sizePercent = block.image?.sizePercent ?? block.video?.sizePercent;
   if (sizePercent === undefined) return undefined;
+  const align = block.image?.align ?? block.video?.align;
   const remainder = Math.max(0, 100 - sizePercent);
   const sizeTrack = `${sizePercent}fr`;
   const remainderTrack = `${remainder}fr`;
-  const ownRows = block.image?.align === "bottom" ? `${remainderTrack} ${sizeTrack}` : `${sizeTrack} ${remainderTrack}`;
+  const ownRows = align === "bottom" ? `${remainderTrack} ${sizeTrack}` : `${sizeTrack} ${remainderTrack}`;
   return `grid-template-rows: ${block.html ? `auto ${ownRows}` : ownRows};`;
 }
 
@@ -70,9 +86,21 @@ function blockGridStyle(block: SectionBlock): string | undefined {
 // .figure out of the default auto-placed (first, blank) row into the
 // size track, which blockGridStyle() put last in that case.
 function figureGridRow(block: SectionBlock): string | undefined {
-  if (block.image?.sizePercent === undefined || block.image?.align !== "bottom") return undefined;
+  const sizePercent = block.image?.sizePercent ?? block.video?.sizePercent;
+  const align = block.image?.align ?? block.video?.align;
+  if (sizePercent === undefined || align !== "bottom") return undefined;
   const lastRow = block.html ? 3 : 2;
   return `grid-row: ${lastRow};`;
+}
+
+// Accepts a full YouTube URL in any common form (watch/youtu.be/embed/
+// shorts, with or without extra query params like a timestamp or share
+// token) or a bare 11-character video ID, and returns just the ID.
+function extractYouTubeId(input: string): string {
+  const trimmed = input.trim();
+  if (/^[\w-]{11}$/.test(trimmed)) return trimmed;
+  const match = trimmed.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
+  return match ? match[1] : trimmed;
 }
 ---
 
@@ -108,6 +136,19 @@ function figureGridRow(block: SectionBlock): string | undefined {
                 {block.image.caption && <figcaption>{block.image.caption}</figcaption>}
               </figure>
             )}
+            {block.video && (
+              <figure class="figure" style={figureGridRow(block)}>
+                <button
+                  class="video-thumb"
+                  data-youtube-id={extractYouTubeId(block.video.youtube)}
+                  aria-label={`Play video${block.video.caption ? `: ${block.video.caption}` : ""}`}
+                >
+                  <img src={`https://i.ytimg.com/vi/${extractYouTubeId(block.video.youtube)}/hqdefault.jpg`} alt="" />
+                  <span class="play-icon" aria-hidden="true"></span>
+                </button>
+                {block.video.caption && <figcaption>{block.video.caption}</figcaption>}
+              </figure>
+            )}
             {block.images && block.images.length > 0 && (
               <div
                 class="figure-stack"
@@ -127,6 +168,39 @@ function figureGridRow(block: SectionBlock): string | undefined {
     )}
   </div>
 </section>
+
+<script>
+  // Swaps a clicked video thumbnail for a real embedded YouTube player —
+  // deferred until the click so no YouTube JS/cookies load just from
+  // having a video block on the page ("lite embed" pattern). Astro
+  // de-dupes this script across every ProjectSection instance on a page,
+  // so it's safe to attach once per thumbnail here rather than needing a
+  // page-level script.
+  for (const button of document.querySelectorAll(".video-thumb")) {
+    button.addEventListener("click", () => {
+      const id = button.dataset.youtubeId;
+      if (!id) return;
+      // An <iframe> is a replaced element too, so it hits the exact same
+      // shrink-to-fit width bug .figure img fights elsewhere in this file
+      // (percentage width silently doesn't resolve the way height does).
+      // Rather than another aspect-ratio-based width fix, just copy the
+      // thumbnail's own rendered box size directly onto the iframe before
+      // swapping — that both sidesteps the bug and is a more literal match
+      // for "keep the player the same size as the thumbnail" than
+      // recomputing from an assumed aspect ratio would be.
+      const rect = button.getBoundingClientRect();
+      const iframe = document.createElement("iframe");
+      iframe.className = "video-iframe";
+      iframe.style.width = `${rect.width}px`;
+      iframe.style.height = `${rect.height}px`;
+      iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1`;
+      iframe.title = button.getAttribute("aria-label") ?? "YouTube video";
+      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+      iframe.allowFullscreen = true;
+      button.replaceWith(iframe);
+    });
+  }
+</script>
 
 <style>
   .section {
@@ -325,6 +399,60 @@ function figureGridRow(block: SectionBlock): string | undefined {
     font-style: italic;
     color: #8c8c8c;
     font-size: 16px;
+  }
+
+  /* YouTube thumbnail button — same sizing role as .figure img above
+     (which still applies to the <img> nested inside it: height:100%,
+     object-fit:contain, etc., and still gets picked up by [slug].astro's
+     width-fix script via its ".figure img" selector), just with a
+     clickable play-icon overlay on top. */
+  .video-thumb {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font: inherit;
+  }
+
+  .play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 68px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .play-icon::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 54%;
+    transform: translate(-50%, -50%);
+    border-style: solid;
+    border-width: 12px 0 12px 20px;
+    border-color: transparent transparent transparent #fff;
+  }
+
+  .video-thumb:hover .play-icon {
+    background: #f00;
+  }
+
+  /* :global — this element is created client-side (document.createElement,
+     see the script above), so it never gets Astro's scoped-style
+     data-attribute the way server-rendered elements do; a scoped rule
+     here would silently never match it. width/height aren't set here at
+     all — the click handler sets them inline, copied directly from the
+     thumbnail's own rendered size (see the script's comment for why). */
+  :global(.video-iframe) {
+    display: block;
+    border: none;
   }
 
   /* multiple images stacked in one column (block.images, vs. a single

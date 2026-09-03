@@ -23,7 +23,7 @@ sections:
     accent: "#525252"
     blocks:
       - html: |
-          Desktop research and my ethnography at Helsinki's Ateneum art museum shaped the backbone of the interactions that I designed.
+          Desktop research and my ethnography at Helsinki's Ateneum art museum shaped the backbone of the interactions.
           <br><br><b>1. Visitors' engagement varies a lot — between-subject</b>
           <br>During an extended observation at Ateneum, I noticed that engagement with wall texts varied widely throughout different visitors.  This suggested that guidance should be optional so that it accommodates different levels of interest.
           <br><b>2. Visitors' engagement varies a lot — within-subject</b>
@@ -63,6 +63,12 @@ sections:
           src: /images/hesper-dog.png
           sizePercent: 60
           align: bottom
+  - title: Demo
+    accent: "#1846b4"
+    blocks:
+      - video:
+          youtube: "https://youtu.be/X3e9L07OeNM"
+          caption: Youtube link to the demo
     
   - title: Reflections
     variant: circle

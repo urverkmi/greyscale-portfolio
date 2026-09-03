@@ -19,12 +19,29 @@ const imageSchema = z.object({
   align: z.enum(["top", "bottom"]).default("top"),
 });
 
+const videoSchema = z.object({
+  // Any common YouTube URL form (watch/youtu.be/embed/shorts, with or
+  // without extra query params) or a bare 11-character video ID — parsed
+  // in ProjectSection.astro's extractYouTubeId().
+  youtube: z.string(),
+  caption: z.string().optional(),
+  // same meaning as SectionImage's sizePercent/align below, for a lone
+  // video filling its own block/column
+  sizePercent: z.number().positive().optional(),
+  align: z.enum(["top", "bottom"]).default("top"),
+});
+
 const blockSchema = z.object({
   html: z.string().optional(),
   image: imageSchema.optional(),
   // multiple images stacked vertically within this one block/column (as
   // opposed to `image`, a single image filling the whole column)
   images: z.array(imageSchema).optional(),
+  // a clickable YouTube thumbnail that swaps itself for a real embedded
+  // player on click (a "lite embed" — no YouTube JS/cookies load until
+  // then). Mutually exclusive with image/images in practice, though
+  // nothing stops combining them if a future design wants to.
+  video: videoSchema.optional(),
 });
 
 const sectionSchema = z.object({
