@@ -71,7 +71,16 @@ const CANVAS = "#e6e6e6";
 
   <Nav active={null} />
 
-  <script>
+  <script is:inline>
+    // is:inline (not Astro's default deferred module script) so this runs
+    // synchronously while the page is still parsing, before first paint —
+    // same technique Page.astro uses for its own frame-scale calc, and for
+    // the same reason: the CSS fallback below (.meta-stack's calc(), still
+    // there for when JS is unavailable) doesn't include the NUDGE_X/
+    // NUDGE_Y offset this script applies, so without this, every page load
+    // visibly started at the un-nudged position and then jumped once the
+    // deferred script got around to correcting it.
+    //
     // A mouse wheel only ever sends deltaY (vertical), so without this,
     // scrolling here does nothing — a trackpad's horizontal swipe already
     // works natively via deltaX, and isn't always available. Redirecting

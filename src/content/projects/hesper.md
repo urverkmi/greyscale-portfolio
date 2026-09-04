@@ -75,6 +75,6 @@ sections:
     blocks:
       - html: |
           The prototype left me curious about what makes people interested enough to seek out information voluntarily. If I were to continue on this project, I would extend the experience to sculptures and allow visitors to move around an artwork and discover different layers of information from different angles. 
-          <br><br>Ultimately, I explored MR as a tool for making learning about art feel more natural and intuitive. While MR headsets are not yet practical for actual museum adoption due to their scarcity and lack of general popularity, this project served as a personal experiment of whether I can design a seamless experience with a peripheral technology that might feel "extra".
+          <br><br>Ultimately, I explored MR as a tool for making learning about art feel more natural and intuitive. While MR museum guides are not yet practical for actual adoption due to their scarcity, this project served as a personal experiment of whether I can design a seamless experience with a peripheral technology that might feel "extra".
 
 ---
