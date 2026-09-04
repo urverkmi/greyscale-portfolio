@@ -48,7 +48,7 @@ sections:
           src: /images/hesper-testing-princess.jpg
           caption: Screenshots from user testing session — area of interest
       - html: |
-          It is also possible to compare the artwork with another work placed side-by-side. This works really well in showing a related work. With this example, Hesper allows visitors to compare how Picasso created his rendition of <i>Les Meninas</i>.
+          It is also possible to compare the artwork with another work placed side-by-side. This works really well in showing a related work. With this example, Hesper allows visitors to compare how Picasso created his rendition of <i>Las Meninas</i>.
         image:
           src: /images/hesper-testing-picasso.jpg
           caption: Screenshots from user testing session — "Compare with Picasso"

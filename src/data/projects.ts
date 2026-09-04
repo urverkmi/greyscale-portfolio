@@ -15,13 +15,6 @@ export const projects: Project[] = [
     logo: "/logos/frictionless-logo.svg",
   },
   {
-    slug: "kone",
-    title: "KONE Concierge",
-    tagline: "AI concierge in hotel elevators",
-    category: "experience design",
-    logo: "/logos/kone-logo.svg",
-  },
-  {
     slug: "hesper",
     title: "Hesper the Artsy Ghost",
     tagline: "Mixed reality in art museums",
@@ -34,5 +27,12 @@ export const projects: Project[] = [
     tagline: "Toy dispenser operated by cats",
     category: "product design",
     logo: "logos/catcha-logo.svg",
+  },
+  {
+    slug: "kone",
+    title: "KONE Concierge",
+    tagline: "AI concierge in hotel elevators",
+    category: "experience design",
+    logo: "/logos/kone-logo.svg",
   },
 ];

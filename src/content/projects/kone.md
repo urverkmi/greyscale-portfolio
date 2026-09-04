@@ -4,7 +4,7 @@ sponsor:
   name: KONE Design
   url: https://origin-www.kone.com/en/careers/professionals-and-technical-experts/design.aspx
 intro: >
-  KONE Design gave us an open-ended challenge: explore the role of an AI concierge in the elevator, and design a joyful experience for passengers. We grounded the concept in modern, budget-friendly hotels, and we designed for hotel guests navigating an unfamiliar city so that the concierge has a chance to learn the user’s preferences over their stay.
+  KONE Design gave us an open-ended challenge: explore the role of an AI concierge in the elevator, and design a joyful experience for passengers. 
   <br><br>
   <br><b>Role</b>: Interaction Designer (as part of group of 4)
   <br><b>Course</b>: Experience Design Project
@@ -24,17 +24,35 @@ sections:
         image:
           src: /logos/kone-elevator.svg
       - html: |
+          We grounded the concept in modern, budget-friendly hotels, and we designed for hotel guests navigating an unfamiliar city. The concierge has a chance to learn the user’s preferences over their stay.
           <br><br>We designed the concierge as a built-in screen within the hotel elevator, positioned from roughly waist height upward to make interaction comfortable and accessible for most guests. We connected each guest’s interaction data to their room key card, as most hotels already require them to tap the same card to access their floor. This allows the concierge to recognize guests seamlessly without requiring additional input. 
           <br><br>Naturally, privacy was designed into the system. A guest's interaction data is automatically erased as they check out to ensure that the concierge does not retain information beyond their stay.
-  - title: Passive - Active interactive flow
+  - title: From design constraints to design principles
+    accent: "#525252"
+    blocks: 
+      - html: |
+          We were drawn to the elevator as a <i>liminal space</i>, where people are constantly in transition. Unlike many digital interactions, an elevator is also a shared and short-lived social space. Our interviews revealed that some people found being around strangers can feel slightly awkward, and they did not want to draw attention to themselves.
+          <br><br>This challenged an assumption we often made when we design: designing for a “perfect” use case in which the user has the time and privacy to interact. Here, none of those conditions could be guaranteed. 
+          <br><br>The short duration of an elevator ride introduced another constraint. With interactions often lasting less than a minute and hotel guests varying widely in their culture, interests, and familiarity with technology, the value of the concierge needed to be immediately understandable and worthwhile.
+      - html: |
+          With these considerations, we defined our principles:
+          <br><b>1. Designing for both interaction and non-interaction,
+          <br>2. Make interaction feel natural in a shared space,
+          <br>3. Deliver value quickly,
+          <br>4. Always keep the user in control.</b>
+  - title: Designing for non-interaction
     accent: "#525252"
     blocks:
       - html: |
-          We designed the concierge around <b>absence</b> as the default. The passive screens serve generic information until the guest invites the AI by tapping their hotel key card, marking an explicit interaction.
+          The concierge shouldn't be in everyone's face and require every elevator rider to become a user. Therefore, we designed the concierge around <b>absence</b> as the default. We designed two interactive states: a passive screen serves generic information to everyone, until the guest invites the AI by tapping their hotel key card and marking an explicit interaction.
       - image:
           src: /images/kone-basic-flow.png
           alt: "Basic flow of the KONE concierge"
-  - title: Designing the feedback loop
+      - html: |
+          We explored a couple passive screen designs with the goal of providing value without demanding attention.
+        image:
+          src: /images/kone-screens.png
+  - title: Designing for worthwhile information
     accent: "#525252"
     blocks:
       - html: |
@@ -43,7 +61,7 @@ sections:
       - image:
           src: /images/kone-feedback.png
           alt: "KONE concierge recommendation feedback loop"
-  - title: Designing what not to build
+  - title: Designing for natural interaction in a shared space
     accent: "#525252"
     blocks:
       - html: |
