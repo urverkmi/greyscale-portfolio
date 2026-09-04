@@ -79,7 +79,6 @@ sections:
     variant: circle
     blocks:
       - html: |
-          <b>Getting to the actual needs</b> — Design requirements are not always given at the start of a design process. I learned how to approach an unfamiliar domain and formulate the right questions to reach the real problem underneath the brief.
-          <br><b>Consistent documentation</b> — We were an international team. We coordinated through weekly meetings and shared documentation. I took an active role in keeping notes, documenting our decision-making, and making sure everyone stayed on the same page from ideation through final integration.
-          <br><br>This project was unique in that we had only one defined user. That felt very different from other projects I’ve worked on, where we often have to start by identifying a user group and then balancing the needs of different stakeholders. In that sense, the project felt much closer to pure problem solving than traditional user-centered design.
+          In this project, defining the problem was part of the work itself. We spent a good two months going through meetings and discussions, gradually building a shared understanding of the problem before we could even began to think about how to implement the solution.
+          <br><br>The ambiguity is challenging, but it also made the project really interesting to me. As I had no perior experience in this extremely complex field, I had to become comfortable with not having the answers upfront. I learned that before I could formulate the right solution, I first need to learn enough about the domain to ask the right questions and uncover the real problem. That is an approach I can carry into future projects.
 ---
