@@ -11,6 +11,16 @@ const { title } = Astro.props;
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <!--
+      Safari has historically had unreliable support for SVG-only
+      favicons (same class of WebKit gap this project has hit repeatedly
+      elsewhere — zoom, replaced-element sizing, etc.) — a PNG fallback,
+      rasterized from the same icon.svg, is the standard fix. Listed
+      first/plain so it's the universal baseline; browsers that handle
+      SVG favicons well pick up the more specific type="image/svg+xml"
+      link below instead.
+    -->
+    <link rel="icon" type="image/png" href={withBase("/logos/icon.png")} />
     <link rel="icon" type="image/svg+xml" href={withBase("/logos/icon.svg")} />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />

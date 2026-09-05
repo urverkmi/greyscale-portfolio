@@ -36,7 +36,9 @@ const nextProject = projects[nextIndex];
     <div class="carousel">
       <div class="counter">{counter}</div>
 
-      <img class="hero" src={withBase(project.logo)} alt={project.title} width="400" height="400" />
+      <a class="hero-link" href={withBase(`/projects/${project.slug}`)} aria-label={`View ${project.title}`}>
+        <img class="hero" src={withBase(project.logo)} alt={project.title} width="400" height="400" />
+      </a>
 
       <div class="meta">
         <TitleCard
@@ -81,6 +83,10 @@ const nextProject = projects[nextIndex];
     const nextI = (i + 1) % total;
 
     document.querySelector(".carousel .counter").textContent = `project ${i + 1}/${total}`;
+
+    const heroLink = document.querySelector(".carousel .hero-link");
+    heroLink.href = withBase(`/projects/${project.slug}`);
+    heroLink.setAttribute("aria-label", `View ${project.title}`);
 
     const heroImg = document.querySelector(".carousel .hero");
     heroImg.src = withBase(project.logo);
@@ -199,12 +205,22 @@ const nextProject = projects[nextIndex];
     font-size: 20px;
   }
 
-  .hero {
+  /* the logo is now a link to the project's detail page (like the title
+     text already was) — positioning lives here on the wrapper, and .hero
+     itself (the <img>) just fills it, so both stay in sync with zero
+     duplicated coordinates */
+  .hero-link {
     position: absolute;
     left: 83px;
     top: 49px;
     width: 400px;
     height: 400px;
+    display: block;
+  }
+
+  .hero-link .hero {
+    width: 100%;
+    height: 100%;
     display: block;
   }
 
