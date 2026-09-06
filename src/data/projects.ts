@@ -35,4 +35,11 @@ export const projects: Project[] = [
     category: "experience design",
     logo: "/logos/kone-logo.svg",
   },
+  {
+    slug: "graphic",
+    title: "Designs by me",
+    tagline: "My personal projects, side gigs, and more",
+    category: "graphic design",
+    logo: "/logos/graphic-logo.svg",
+  }
 ];
