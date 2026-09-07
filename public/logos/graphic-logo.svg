@@ -1,12 +1,13 @@
 <svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <rect x="0.5" y="0.5" width="399" height="399" fill="#ECECEC" stroke="black"/>
-<rect x="94" y="80" width="211" height="290" fill="white"/>
 <rect x="339" y="79" width="60" height="290" fill="url(#paint0_linear_960_400)"/>
 <rect x="1" y="80" width="60" height="290" fill="url(#pattern0_960_400)"/>
+<rect x="94" y="80" width="211" height="290" fill="white"/>
 <ellipse cx="157.5" cy="139.5" rx="62.5" ry="58.5" fill="#D9D9D9"/>
 <ellipse cx="236.5" cy="210" rx="67.5" ry="28" fill="#D9D9D9"/>
 <ellipse cx="236.5" cy="266" rx="67.5" ry="28" fill="#D9D9D9"/>
 <rect x="106.701" y="329.193" width="40" height="18.0389" transform="rotate(40.4382 106.701 329.193)" fill="black"/>
+<path d="M278.272 275C324.177 296.255 271.079 367.467 252 369.517" stroke="black"/>
 <defs>
 <linearGradient id="paint0_linear_960_400" x1="369" y1="79" x2="369" y2="369" gradientUnits="userSpaceOnUse">
 <stop stop-color="white"/>

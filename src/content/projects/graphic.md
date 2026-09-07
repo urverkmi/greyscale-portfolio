@@ -9,7 +9,7 @@ sections:
     accent: "#11922d"
     blocks:
       - html: |
-          As I traveled out of the country for my master's, I designed and printed some calendars to gift to my friends as a farewell gift. The calendar featured some of my artworks done by soft pastel.
+          As I traveled out of the country for my master's, I designed and printed some calendars to gift to my friends as a farewell gift. The calendar featured some of my artworks done with soft pastel.
         image:
           src: /images/graphic-calendar.jpg
       - images:
